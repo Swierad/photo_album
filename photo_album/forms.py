@@ -1,4 +1,5 @@
-from .models import User
+from .models import User, Photo
+from django import forms
 
 
 class UserLoginForm(forms.Form):
@@ -11,7 +12,7 @@ class UserCreateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'password2', 'first_name', 'last_name', 'wherefrom']
+        fields =  '__all__'
         widgets = {
             'password': forms.PasswordInput(),
         }
@@ -33,3 +34,9 @@ class UserCreateForm(forms.ModelForm):
             '''
 
         return self.cleaned_data
+
+
+class PhotoFieldForm(forms.Form):
+    class Meta:
+        model = Photo
+        fields = ['path', 'user']

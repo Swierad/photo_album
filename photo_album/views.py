@@ -1,10 +1,29 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
+from .forms import UserCreateForm, UserLoginForm, PhotoFieldForm
+from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .models import User, Photo
 
+
+#Main Page
 class PhotoAlbumView(View):
     def get(self, request):
-        return render(request, "index.html")
+        photos = Photo.objects.all()
+        ctx = {'photos': photos}
+        return render(request, "index.html", ctx)
+
+    # form that allows to upload a photo
+    def post(self, request):
+        f = PhotoFieldForm(request.user, request.POST, request.FILES)
+        if f.is_valid():
+            f.save()
+            return reverse_lazy("index.html")
+        print(f.errors)
+        return render(request, "index.html", ctx)
+
+
 
 class UserLoginView(View):
     def get(self, request):
