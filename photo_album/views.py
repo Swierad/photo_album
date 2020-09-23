@@ -1,22 +1,25 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserCreateForm, UserLoginForm, PhotoFieldForm
+from .forms import UserCreateForm, UserLoginForm, PhotoForm
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import User, Photo
+from django.views.generic.edit import CreateView
+
 
 
 #Main Page
 class PhotoAlbumView(View):
     def get(self, request):
         photos = Photo.objects.all()
-        ctx = {'photos': photos}
+        form = PhotoForm()
+        ctx = {'photos': photos,
+               'form': form}
         return render(request, "index.html", ctx)
 
-    # form that allows to upload a photo
     def post(self, request):
-        f = PhotoFieldForm(request.user, request.POST, request.FILES)
+        f = PhotoForm(request.user, request.POST, request.FILES)
         if f.is_valid():
             f.save()
             return reverse_lazy("index.html")
@@ -55,5 +58,5 @@ class UserLogoutView(View):
 
 class UserCreateView(CreateView):
     form_class = UserCreateForm
-    template_name = "Auto_Zdam/user_create.html"
+    template_name = "user_create.html"
     success_url = reverse_lazy("index")
