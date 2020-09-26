@@ -38,6 +38,8 @@ class UserCreateForm(forms.ModelForm):
 
 
 class PhotoForm(ModelForm):
+
     class Meta:
         model = Photo
-        exclude = ['creation_date', 'user']
+        fields = ['path']
+        #exclude = ['creation_date']

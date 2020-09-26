@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserCreateForm, UserLoginForm, PhotoForm
@@ -19,12 +20,18 @@ class PhotoAlbumView(View):
         return render(request, "index.html", ctx)
 
     def post(self, request):
-        f = PhotoForm(request.user, request.POST, request.FILES)
+        f = PhotoForm(request.POST, request.FILES)
         if f.is_valid():
             f.save()
-            return reverse_lazy("index.html")
+            photos = Photo.objects.all()
+            form = PhotoForm()
+            ctx = {'photos': photos,
+                   'form': form}
+            return render(request, "index.html", ctx)
+                #reverse_lazy("index")
         print(f.errors)
         return render(request, "index.html", ctx)
+
 
 
 
@@ -40,11 +47,9 @@ class UserLoginView(View):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect(reverse('index'))
-                else:
-                    form.add_error(None, "Konto nie jest aktywne")
+                login(request, user)
+                return redirect(reverse('index'))
+
             else:
                 # user is None
                 form.add_error(None, "Nieprawidłowy login lub hasło")
