@@ -1,4 +1,4 @@
-from .models import User, Photo
+from .models import User, Photo, Comment
 from django import forms
 from django.forms import ModelForm
 
@@ -41,5 +41,18 @@ class PhotoForm(ModelForm):
 
     class Meta:
         model = Photo
-        fields = ['path']
-        #exclude = ['creation_date']
+        fields = ['path', 'user']
+        widgets = {
+            'user': forms.HiddenInput()
+        }
+
+
+class CommentForm(ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['nickname', 'comment']
+        widgets = {
+            'nickname': forms.TextInput(),
+            'comment': forms.Textarea()
+        }

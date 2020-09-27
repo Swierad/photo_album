@@ -23,5 +23,6 @@ urlpatterns = [
     path('', pa_views.PhotoAlbumView.as_view(), name="index"),
     path('login', pa_views.UserLoginView.as_view(), name="user-login"),
     path('create', pa_views.UserCreateView.as_view(), name="user-create"),
+    path('photo/<int:pk>', pa_views.CommentCreateView.as_view(), name="add-comment"),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
