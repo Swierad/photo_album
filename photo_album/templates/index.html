@@ -15,7 +15,7 @@
 {% for photo in photos %}
 
     <tr>
-                    <td rowspan="2" class="image"><img src="{{photo.path.url}}" width="25%" alt="mapa"  height="25%"></td>
+        <a href="{% url 'photo-detail' photo.pk %}"><img src="{{photo.path.url}}" width="25%" alt="mapa"  height="25%"></a>
     </tr>
 <br>
     <tr>
@@ -23,16 +23,23 @@
         <br>
         data dodania: {{photo.creation_date}}
         <br>
+        <form action="{% url 'like-post' photo.pk%}" method="post" >
+  {% csrf_token %}
+
+            <button type="submit" value="{{photo.id}}" name="like"> like </button>
+            <button type="submit" value="{{photo.id}}" name="dislike"> dislike </button>
+        <br>
         <br>
         Comments...
         <br>
-        {%for comment in photo.comments.all%}
+
+    {%for comment in photo.comments.all%}
         <strong>
         {{comment.nickname}} - {{comment.creation_date}}
         </strong>
         <br>
         {{comment.comment}}
-{% endfor %}
+    {% endfor %}
         <br>
         <a href="{% url 'add-comment' photo.pk %}">dodaj komentarz</a>
 

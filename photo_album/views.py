@@ -1,19 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserCreateForm, UserLoginForm, PhotoForm, CommentForm
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .models import User, Photo
 from django.views.generic.edit import CreateView
+from django.http import HttpResponseRedirect
 
 
 
 #Main Page
 class PhotoAlbumView(View):
     def get(self, request):
-        photos = Photo.objects.all().order_by('creation_date')
+        photos = Photo.objects.all()\
+            #.order_by('creation_date')
         form = PhotoForm(initial={'user': request.user})
         ctx = {'photos': photos,
                'form': form}
@@ -76,3 +78,22 @@ class CommentCreateView(CreateView):
     def form_valid(self, form):
         form.instance.photo_id = self.kwargs['pk']
         return super().form_valid(form)
+
+class PhotoDetailView(View):
+    def get(self, request, pk):
+        photo = Photo.objects.get(id=pk)
+        ctx = {'photo': photo
+               }
+        return render(request, "photo_detail.html", ctx)
+
+class likeView(View):
+    def post(self, request, pk):
+        obj = Photo.objects.get(id=pk)
+        likes = obj.likes
+        if request.POST.get('like'):
+            obj.likes += 1
+            obj.save()
+        elif request.POST.get('dislike'):
+            obj.likes-= 1
+            obj.save()
+        return HttpResponseRedirect(reverse('index'))

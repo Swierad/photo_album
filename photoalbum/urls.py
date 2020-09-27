@@ -24,5 +24,7 @@ urlpatterns = [
     path('login', pa_views.UserLoginView.as_view(), name="user-login"),
     path('create', pa_views.UserCreateView.as_view(), name="user-create"),
     path('photo/<int:pk>', pa_views.CommentCreateView.as_view(), name="add-comment"),
+    path('photo-detail/<int:pk>', pa_views.PhotoDetailView.as_view(), name="photo-detail"),
+    path('like/<int:pk>', pa_views.likeView.as_view(), name="like-post"),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

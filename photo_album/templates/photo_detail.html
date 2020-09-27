@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block content %}
+
+
+
+
+
+
+    <tr>
+        <img src="{{photo.path.url}}" width="25%" alt="mapa"  height="25%">
+    </tr>
+<br>
+
+
+ <tr>
+        autor: {{photo.user}}
+        <br>
+        data dodania: {{photo.creation_date}}
+        <br>
+        <br>
+        Comments...
+        <br>
+
+        {%for comment in photo.comments.all%}
+        <strong>
+        {{comment.nickname}} - {{comment.creation_date}}
+        </strong>
+        <br>
+        {{comment.comment}}
+{% endfor %}
+        <br>
+        <a href="{% url 'add-comment' photo.pk %}">dodaj komentarz</a>
+
+    </tr>
+<br>
+<br>
+<br>
+
+
+
+
+
+{% endblock %}
